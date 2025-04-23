@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { usePersonality } from "@/context";
 import { QuizQuestion } from "@/data/quizQuestions";
@@ -10,9 +9,15 @@ interface QuizCardProps {
   question: QuizQuestion;
   onNext: () => void;
   isPremiumCTA?: boolean;
+  questionNumber?: number;
 }
 
-const QuizCard: React.FC<QuizCardProps> = ({ question, onNext, isPremiumCTA = false }) => {
+const QuizCard: React.FC<QuizCardProps> = ({ 
+  question, 
+  onNext, 
+  isPremiumCTA = false,
+  questionNumber
+}) => {
   const { responses, setResponses, isPremiumUser } = usePersonality();
   const [sliderValue, setSliderValue] = useState<number>(
     responses[question.id] || 4
@@ -88,6 +93,11 @@ const QuizCard: React.FC<QuizCardProps> = ({ question, onNext, isPremiumCTA = fa
 
   return (
     <div className="quiz-card animate-fade-in">
+      {questionNumber && (
+        <div className="text-sm text-muted-foreground mb-2">
+          Question {questionNumber} of 70
+        </div>
+      )}
       <h2 className="text-xl font-semibold mb-6 text-center">{question.text}</h2>
       
       <div className="my-10">

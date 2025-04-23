@@ -1,17 +1,6 @@
 import React, { useState } from "react";
-import Layout from "@/components/Layout";
-import QuizCard from "@/components/QuizCard";
-import UserInfoForm from "@/components/UserInfoForm";
-import PersonalityResult from "@/components/PersonalityResult";
-import CareerList from "@/components/CareerList";
-import CareerDetail from "@/components/CareerDetail";
-import ShareResults from "@/components/ShareResults";
-import PremiumUpgrade from "@/components/PremiumUpgrade";
 import { usePersonality } from "@/context";
 import { quizQuestions } from "@/data/quizQuestions";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import IntroSection from "./index-sections/IntroSection";
 import QuizSection from "./index-sections/QuizSection";
 import PremiumCTASection from "./index-sections/PremiumCTASection";
@@ -20,6 +9,7 @@ import ResultsSection from "./index-sections/ResultsSection";
 import CareersSection from "./index-sections/CareersSection";
 import CareerDetailSection from "./index-sections/CareerDetailSection";
 import ShareSection from "./index-sections/ShareSection";
+import { Button } from "@/components/ui/button";
 
 enum FlowStep {
   INTRO = 'intro',
@@ -66,7 +56,7 @@ const Index = () => {
       return;
     }
     
-    if (currentQuestionIndex < quizQuestions.length - 1) {
+    if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setStep(FlowStep.USER_INFO);
@@ -116,7 +106,7 @@ const Index = () => {
 
       {step === FlowStep.QUIZ && (
         <QuizSection
-          question={quizQuestions[currentQuestionIndex]}
+          question={quizQuestions[currentQuestionIndex % quizQuestions.length]}
           onNext={handleNextQuestion}
           progress={progressPercentage}
           current={currentQuestionIndex}

@@ -27,7 +27,11 @@ const QuizSection: React.FC<QuizSectionProps> = ({
       </div>
       <Progress value={progress} className="h-2" />
     </div>
-    <QuizCard question={question} onNext={onNext} />
+    <QuizCard 
+      question={question} 
+      onNext={onNext} 
+      questionNumber={current + 1}
+    />
   </div>
 );
 
