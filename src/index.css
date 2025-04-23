@@ -49,8 +49,13 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-sans;
+  html, body {
+    @apply bg-background text-foreground font-sans h-full;
+    overflow-y: auto;
+  }
+  
+  #root {
+    @apply min-h-full flex flex-col;
   }
 }
 
@@ -60,7 +65,7 @@
   }
   
   .swipe-container {
-    @apply relative overflow-hidden h-[500px] w-full max-w-md mx-auto;
+    @apply relative overflow-hidden max-h-[80vh] w-full max-w-md mx-auto;
   }
   
   .trait-bar {
@@ -78,4 +83,9 @@
   .rating-pill {
     @apply px-3 py-1 rounded-full text-sm font-medium;
   }
+}
+
+/* Ensure scrollable content */
+.scrollable-content {
+  @apply overflow-y-auto max-h-[calc(100vh-200px)];
 }

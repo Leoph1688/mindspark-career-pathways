@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "@/components/Layout";
 import QuizCard from "@/components/QuizCard";
 import UserInfoForm from "@/components/UserInfoForm";
@@ -7,6 +6,7 @@ import PersonalityResult from "@/components/PersonalityResult";
 import CareerList from "@/components/CareerList";
 import CareerDetail from "@/components/CareerDetail";
 import ShareResults from "@/components/ShareResults";
+import PremiumUpgrade from "@/components/PremiumUpgrade";
 import { usePersonality } from "@/context";
 import { quizQuestions } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,6 @@ const Index = () => {
     totalQuestions
   } = usePersonality();
 
-  // Calculate progress percentage
   const progressPercentage = Math.floor((currentQuestionIndex / totalQuestions) * 100);
 
   const startQuiz = () => {
@@ -54,7 +53,6 @@ const Index = () => {
   };
 
   const handleNextQuestion = () => {
-    // For free users, show premium CTA after 15 questions
     if (!isPremiumUser && currentQuestionIndex === 14) {
       setStep(FlowStep.PREMIUM_CTA);
       return;
@@ -68,8 +66,6 @@ const Index = () => {
   };
 
   const handlePremiumChoice = () => {
-    // In a real app, this would handle payment processing
-    // For now, just continue with the quiz
     setCurrentQuestionIndex(currentQuestionIndex + 1);
     setStep(FlowStep.QUIZ);
   };
@@ -91,7 +87,6 @@ const Index = () => {
   };
 
   const handleRestartQuiz = () => {
-    // Reset the state
     setQuizCompleted(false);
     setCurrentQuestionIndex(0);
     setResponses({});
@@ -102,11 +97,9 @@ const Index = () => {
     setEmail('');
     setSuggestedCareers([]);
     
-    // Go back to the intro
     setStep(FlowStep.INTRO);
   };
-  
-  // Progress indicator for the quiz
+
   const renderProgressBar = () => {
     return (
       <div className="mb-6">
@@ -183,13 +176,7 @@ const Index = () => {
       )}
       
       {step === FlowStep.PREMIUM_CTA && (
-        <div className="swipe-container">
-          <QuizCard
-            question={quizQuestions[currentQuestionIndex]} 
-            onNext={handlePremiumChoice}
-            isPremiumCTA={true}
-          />
-        </div>
+        <PremiumUpgrade onContinue={handlePremiumChoice} />
       )}
       
       {step === FlowStep.USER_INFO && (
