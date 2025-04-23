@@ -4,6 +4,7 @@ import { usePersonality } from "@/context";
 import { QuizQuestion } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface QuizCardProps {
   question: QuizQuestion;
@@ -87,47 +88,54 @@ const QuizCard: React.FC<QuizCardProps> = ({
 
   // Regular question card
   return (
-    <div className="quiz-card animate-fade-in p-6">
+    <div className="quiz-card animate-fade-in bg-white rounded-3xl shadow-lg p-8 max-w-2xl mx-auto">
       {questionNumber && (
-        <div className="text-sm text-muted-foreground mb-2">
-          Question {questionNumber} of 70
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-sm font-medium text-muted-foreground bg-secondary/50 px-3 py-1 rounded-full">
+            Question {questionNumber} of 70
+          </span>
+          <span className="text-2xl font-semibold text-primary">{questionNumber}/70</span>
         </div>
       )}
       
-      <h2 className="text-xl font-semibold mb-8 text-center">{question.text}</h2>
+      <h2 className="text-2xl font-bold mb-10 text-center">{question.text}</h2>
       
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <Button
           variant={selectedValue === 1 ? "default" : "outline"}
-          className={`h-auto py-6 px-4 flex flex-col items-center justify-center text-center ${
-            selectedValue === 1 ? "bg-primary" : ""
-          }`}
+          className={cn(
+            "h-auto py-8 px-6 flex flex-col items-center gap-4 rounded-2xl transition-all",
+            selectedValue === 1 ? "bg-primary shadow-lg scale-[1.02]" : "hover:bg-secondary/20",
+            "group"
+          )}
           onClick={() => handleOptionSelect(1)}
         >
-          <span className="text-lg mb-2">A</span>
-          <span>{question.leftOption}</span>
+          <span className="text-2xl font-bold mb-2 group-hover:text-primary">A</span>
+          <span className="text-base text-center">{question.leftOption}</span>
         </Button>
         
         <Button
           variant={selectedValue === 7 ? "default" : "outline"}
-          className={`h-auto py-6 px-4 flex flex-col items-center justify-center text-center ${
-            selectedValue === 7 ? "bg-primary" : ""
-          }`}
+          className={cn(
+            "h-auto py-8 px-6 flex flex-col items-center gap-4 rounded-2xl transition-all",
+            selectedValue === 7 ? "bg-primary shadow-lg scale-[1.02]" : "hover:bg-secondary/20",
+            "group"
+          )}
           onClick={() => handleOptionSelect(7)}
         >
-          <span className="text-lg mb-2">B</span>
-          <span>{question.rightOption}</span>
+          <span className="text-2xl font-bold mb-2 group-hover:text-primary">B</span>
+          <span className="text-base text-center">{question.rightOption}</span>
         </Button>
       </div>
       
       <div className="flex justify-center">
         <Button
           onClick={onNext}
-          className="w-full sm:w-auto px-8"
+          className="w-full sm:w-auto px-12 py-6 text-lg rounded-full shadow-md hover:shadow-lg transition-all"
           disabled={selectedValue === null}
           size="lg"
         >
-          Continue <ArrowRight className="ml-2 h-4 w-4" />
+          Continue <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
     </div>
