@@ -1,4 +1,3 @@
-
 import React from "react";
 import { usePersonality } from "@/context";
 import { personalityTypes } from "@/data/personalityTypes";
@@ -25,11 +24,9 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
   }
   
   const handleUpgrade = () => {
-    // In a real app, this would handle payment processing
     setIsPremiumUser(true);
   };
   
-  // Simplified traits for free users
   const displayTraits = isPremiumUser ? traits : traits.slice(0, 4);
   
   return (
@@ -60,7 +57,6 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
         )}
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* MBTI Type Card */}
           <Card className="p-6 col-span-1 lg:col-span-2 bg-secondary bg-opacity-50">
             <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
               <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary flex items-center justify-center">
@@ -101,17 +97,15 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
             </div>
           </Card>
           
-          {/* Zodiac Card */}
           <Card className="p-6 bg-secondary bg-opacity-50">
             <div className="text-center mb-4">
               <span className="text-4xl">{zodiacEmoji}</span>
               <h3 className="text-xl font-bold mt-2">{zodiacSign}</h3>
             </div>
-            <p className="text-sm text-muted-foreground">{zodiacDescription}</p>
+            <p className="text-sm text-muted-foreground">Your cosmic personality complements your MBTI type.</p>
           </Card>
         </div>
         
-        {/* Trait Bars */}
         <Card className="p-6 mt-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-bold">Your Personality Traits</h3>
@@ -154,7 +148,6 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
           </div>
         </Card>
         
-        {/* Learning Style */}
         <Card className="p-6 mt-6">
           <h3 className="text-xl font-bold mb-2">Your Learning Style</h3>
           {isPremiumUser ? (

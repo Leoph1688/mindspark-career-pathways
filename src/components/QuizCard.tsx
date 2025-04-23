@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { usePersonality } from "@/context";
 import { QuizQuestion } from "@/data/quizQuestions";
@@ -112,11 +113,9 @@ const QuizCard: React.FC<QuizCardProps> = ({
         
         <div className="flex justify-between text-sm">
           <div className="max-w-[45%] text-left">
-            <span className="font-medium block mb-1">Strongly Agree</span>
             <p className="text-muted-foreground">{question.leftOption}</p>
           </div>
           <div className="max-w-[45%] text-right">
-            <span className="font-medium block mb-1">Strongly Agree</span>
             <p className="text-muted-foreground">{question.rightOption}</p>
           </div>
         </div>
@@ -137,3 +136,4 @@ const QuizCard: React.FC<QuizCardProps> = ({
 };
 
 export default QuizCard;
+
