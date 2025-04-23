@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PersonalityContext from './PersonalityContext';
 import { MBTIType, Trait, Career, PersonalityContextType } from '@/types/personality';
@@ -201,7 +200,9 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
         quizCompleted, setQuizCompleted,
         calculateMBTI, calculateSuggestedCareers,
         isPremiumUser, setIsPremiumUser,
-        totalQuestions
+        totalQuestions,
+        name,
+        setName
       }}
     >
       {children}

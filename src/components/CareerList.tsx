@@ -1,6 +1,6 @@
 
 import React from "react";
-import { usePersonality } from "@/context/PersonalityContext";
+import { usePersonality } from "@/context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Lock } from "lucide-react";

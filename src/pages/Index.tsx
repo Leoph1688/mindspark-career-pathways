@@ -7,7 +7,7 @@ import PersonalityResult from "@/components/PersonalityResult";
 import CareerList from "@/components/CareerList";
 import CareerDetail from "@/components/CareerDetail";
 import ShareResults from "@/components/ShareResults";
-import { usePersonality } from "@/context/PersonalityContext";
+import { usePersonality } from "@/context";
 import { quizQuestions } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";

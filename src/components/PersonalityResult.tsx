@@ -1,6 +1,6 @@
 
 import React from "react";
-import { usePersonality } from "@/context/PersonalityContext";
+import { usePersonality } from "@/context";
 import { personalityTypes } from "@/data/personalityTypes";
 import { getZodiacEmoji, getZodiacDescription } from "@/utils/zodiacUtils";
 import { Button } from "@/components/ui/button";

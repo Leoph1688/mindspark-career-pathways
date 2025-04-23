@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { usePersonality } from "@/context/PersonalityContext";
+import { usePersonality } from "@/context";
 import { QuizQuestion } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";

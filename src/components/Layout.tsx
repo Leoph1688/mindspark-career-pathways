@@ -1,6 +1,5 @@
-
 import React from "react";
-import { usePersonality } from "@/context/PersonalityContext";
+import { usePersonality } from "@/context";
 
 interface LayoutProps {
   children: React.ReactNode;
