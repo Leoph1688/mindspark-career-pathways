@@ -1,0 +1,277 @@
+
+import React, { createContext, useContext, useState } from 'react';
+
+type MBTIType = 'INTJ' | 'INTP' | 'ENTJ' | 'ENTP' | 'INFJ' | 'INFP' | 'ENFJ' | 'ENFP' | 
+                'ISTJ' | 'ISFJ' | 'ESTJ' | 'ESFJ' | 'ISTP' | 'ISFP' | 'ESTP' | 'ESFP' | null;
+
+type Trait = {
+  name: string;
+  value: number; // 0-100
+  description: string;
+};
+
+type Career = {
+  id: number;
+  title: string;
+  description: string;
+  personalityFit: number; // 0-100
+  salarySatisfaction: number; // 0-100
+  growthPotential: number; // 0-100
+  overallScore: number; // 0-100, calculated based on weights
+  dailyActivities: string[];
+  salaryRange: {
+    min: number;
+    max: number;
+  };
+  outlook: string;
+  aiRisk: 'Low' | 'Medium' | 'High';
+};
+
+interface PersonalityContextType {
+  currentQuestionIndex: number;
+  setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
+  responses: Record<number, number>;
+  setResponses: React.Dispatch<React.SetStateAction<Record<number, number>>>;
+  mbtiType: MBTIType;
+  setMbtiType: React.Dispatch<React.SetStateAction<MBTIType>>;
+  traits: Trait[];
+  setTraits: React.Dispatch<React.SetStateAction<Trait[]>>;
+  birthdate: string;
+  setBirthdate: React.Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  zodiacSign: string;
+  setZodiacSign: React.Dispatch<React.SetStateAction<string>>;
+  suggestedCareers: Career[];
+  setSuggestedCareers: React.Dispatch<React.SetStateAction<Career[]>>;
+  quizCompleted: boolean;
+  setQuizCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  calculateMBTI: () => void;
+  calculateSuggestedCareers: () => void;
+}
+
+const PersonalityContext = createContext<PersonalityContextType | undefined>(undefined);
+
+export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [responses, setResponses] = useState<Record<number, number>>({});
+  const [mbtiType, setMbtiType] = useState<MBTIType>(null);
+  const [traits, setTraits] = useState<Trait[]>([]);
+  const [birthdate, setBirthdate] = useState('');
+  const [email, setEmail] = useState('');
+  const [zodiacSign, setZodiacSign] = useState('');
+  const [suggestedCareers, setSuggestedCareers] = useState<Career[]>([]);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+
+  const calculateMBTI = () => {
+    // Simplified MBTI calculation based on responses
+    // In a real app, this would be more sophisticated
+    const dimensions = {
+      E: 0, I: 0, // Extraversion vs Introversion
+      S: 0, N: 0, // Sensing vs Intuition
+      T: 0, F: 0, // Thinking vs Feeling
+      J: 0, P: 0  // Judging vs Perceiving
+    };
+
+    // Example mapping (in a real app, each question would be mapped to dimensions)
+    Object.entries(responses).forEach(([questionId, answer]) => {
+      const qId = parseInt(questionId);
+      if (qId % 8 === 0 || qId % 8 === 1) {
+        answer > 3 ? dimensions.E += answer - 3 : dimensions.I += 4 - answer;
+      } else if (qId % 8 === 2 || qId % 8 === 3) {
+        answer > 3 ? dimensions.S += answer - 3 : dimensions.N += 4 - answer;
+      } else if (qId % 8 === 4 || qId % 8 === 5) {
+        answer > 3 ? dimensions.T += answer - 3 : dimensions.F += 4 - answer;
+      } else {
+        answer > 3 ? dimensions.J += answer - 3 : dimensions.P += 4 - answer;
+      }
+    });
+
+    const type = `${dimensions.E > dimensions.I ? 'E' : 'I'}${dimensions.S > dimensions.N ? 'S' : 'N'}${dimensions.T > dimensions.F ? 'T' : 'F'}${dimensions.J > dimensions.P ? 'J' : 'P'}` as MBTIType;
+    setMbtiType(type);
+
+    // Calculate trait values
+    const newTraits: Trait[] = [
+      {
+        name: 'Extraversion',
+        value: Math.round((dimensions.E / (dimensions.E + dimensions.I)) * 100),
+        description: 'How energized you are by social interaction'
+      },
+      {
+        name: 'Sensing',
+        value: Math.round((dimensions.S / (dimensions.S + dimensions.N)) * 100),
+        description: 'How you gather information from the world'
+      },
+      {
+        name: 'Thinking',
+        value: Math.round((dimensions.T / (dimensions.T + dimensions.F)) * 100),
+        description: 'How you make decisions'
+      },
+      {
+        name: 'Judging',
+        value: Math.round((dimensions.J / (dimensions.J + dimensions.P)) * 100),
+        description: 'How you approach structure and planning'
+      },
+      {
+        name: 'Introversion',
+        value: Math.round((dimensions.I / (dimensions.E + dimensions.I)) * 100),
+        description: 'How you recharge your energy'
+      },
+      {
+        name: 'Intuition',
+        value: Math.round((dimensions.N / (dimensions.S + dimensions.N)) * 100),
+        description: 'How you process information'
+      },
+      {
+        name: 'Feeling',
+        value: Math.round((dimensions.F / (dimensions.T + dimensions.F)) * 100),
+        description: 'How you consider emotions in decisions'
+      },
+      {
+        name: 'Perceiving',
+        value: Math.round((dimensions.P / (dimensions.J + dimensions.P)) * 100),
+        description: 'How flexible you are with plans'
+      }
+    ];
+    
+    setTraits(newTraits);
+  };
+
+  const calculateSuggestedCareers = () => {
+    // In a real app, this would be based on a more sophisticated algorithm
+    // that considers MBTI type, zodiac sign, and other factors
+    const mockCareers: Career[] = [
+      {
+        id: 1,
+        title: 'UX Designer',
+        description: 'Design digital user experiences that are intuitive and enjoyable.',
+        personalityFit: 92,
+        salarySatisfaction: 85,
+        growthPotential: 90,
+        overallScore: 90, // (92*0.5 + 85*0.3 + 90*0.2)
+        dailyActivities: [
+          'Creating wireframes and prototypes',
+          'Conducting user research',
+          'Collaborating with developers',
+          'Presenting designs to stakeholders'
+        ],
+        salaryRange: { min: 65000, max: 120000 },
+        outlook: 'Growing demand as digital products continue to expand',
+        aiRisk: 'Low'
+      },
+      {
+        id: 2,
+        title: 'Data Scientist',
+        description: 'Analyze complex data to help organizations make better decisions.',
+        personalityFit: 88,
+        salarySatisfaction: 95,
+        growthPotential: 95,
+        overallScore: 91, // (88*0.5 + 95*0.3 + 95*0.2)
+        dailyActivities: [
+          'Building predictive models',
+          'Cleaning and preprocessing data',
+          'Visualizing insights',
+          'Presenting findings to business teams'
+        ],
+        salaryRange: { min: 85000, max: 150000 },
+        outlook: 'High demand across all industries',
+        aiRisk: 'Medium'
+      },
+      {
+        id: 3,
+        title: 'Clinical Psychologist',
+        description: 'Help people overcome challenges and improve mental health.',
+        personalityFit: 95,
+        salarySatisfaction: 75,
+        growthPotential: 80,
+        overallScore: 87, // (95*0.5 + 75*0.3 + 80*0.2)
+        dailyActivities: [
+          'Conducting therapy sessions',
+          'Diagnosing mental health conditions',
+          'Developing treatment plans',
+          'Keeping detailed session notes'
+        ],
+        salaryRange: { min: 60000, max: 130000 },
+        outlook: 'Growing need for mental health professionals',
+        aiRisk: 'Low'
+      },
+      {
+        id: 4,
+        title: 'Environmental Scientist',
+        description: 'Study environmental problems and develop solutions to protect the earth.',
+        personalityFit: 85,
+        salarySatisfaction: 70,
+        growthPotential: 85,
+        overallScore: 81, // (85*0.5 + 70*0.3 + 85*0.2)
+        dailyActivities: [
+          'Collecting field samples',
+          'Analyzing environmental data',
+          'Writing research reports',
+          'Advising on environmental policies'
+        ],
+        salaryRange: { min: 50000, max: 110000 },
+        outlook: 'Increasing importance with climate change concerns',
+        aiRisk: 'Low'
+      },
+      {
+        id: 5,
+        title: 'Software Developer',
+        description: 'Create applications and systems that power our digital world.',
+        personalityFit: 80,
+        salarySatisfaction: 90,
+        growthPotential: 90,
+        overallScore: 85, // (80*0.5 + 90*0.3 + 90*0.2)
+        dailyActivities: [
+          'Writing and testing code',
+          'Fixing bugs and optimizing performance',
+          'Collaborating in development teams',
+          'Learning new technologies'
+        ],
+        salaryRange: { min: 70000, max: 150000 },
+        outlook: 'Strong demand across industries',
+        aiRisk: 'Medium'
+      }
+    ];
+
+    // Sort by overall score
+    mockCareers.sort((a, b) => b.overallScore - a.overallScore);
+    setSuggestedCareers(mockCareers);
+  };
+
+  return (
+    <PersonalityContext.Provider
+      value={{
+        currentQuestionIndex,
+        setCurrentQuestionIndex,
+        responses,
+        setResponses,
+        mbtiType,
+        setMbtiType,
+        traits,
+        setTraits,
+        birthdate,
+        setBirthdate,
+        email,
+        setEmail,
+        zodiacSign,
+        setZodiacSign,
+        suggestedCareers,
+        setSuggestedCareers,
+        quizCompleted,
+        setQuizCompleted,
+        calculateMBTI,
+        calculateSuggestedCareers
+      }}
+    >
+      {children}
+    </PersonalityContext.Provider>
+  );
+};
+
+export const usePersonality = (): PersonalityContextType => {
+  const context = useContext(PersonalityContext);
+  if (context === undefined) {
+    throw new Error('usePersonality must be used within a PersonalityProvider');
+  }
+  return context;
+};
