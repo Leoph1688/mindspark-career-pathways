@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { usePersonality } from "@/context";
 import { quizQuestions } from "@/data/quizQuestions";
@@ -10,6 +11,7 @@ import CareersSection from "./index-sections/CareersSection";
 import CareerDetailSection from "./index-sections/CareerDetailSection";
 import ShareSection from "./index-sections/ShareSection";
 import { Button } from "@/components/ui/button";
+import Layout from "@/components/Layout";
 
 enum FlowStep {
   INTRO = 'intro',
