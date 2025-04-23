@@ -200,9 +200,7 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
         quizCompleted, setQuizCompleted,
         calculateMBTI, calculateSuggestedCareers,
         isPremiumUser, setIsPremiumUser,
-        totalQuestions,
-        name,
-        setName
+        totalQuestions
       }}
     >
       {children}
