@@ -12,6 +12,14 @@ import { quizQuestions } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import IntroSection from "./index-sections/IntroSection";
+import QuizSection from "./index-sections/QuizSection";
+import PremiumCTASection from "./index-sections/PremiumCTASection";
+import UserInfoSection from "./index-sections/UserInfoSection";
+import ResultsSection from "./index-sections/ResultsSection";
+import CareersSection from "./index-sections/CareersSection";
+import CareerDetailSection from "./index-sections/CareerDetailSection";
+import ShareSection from "./index-sections/ShareSection";
 
 enum FlowStep {
   INTRO = 'intro',
@@ -100,116 +108,49 @@ const Index = () => {
     setStep(FlowStep.INTRO);
   };
 
-  const renderProgressBar = () => {
-    return (
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium">Your Progress</span>
-          <span className="text-sm text-muted-foreground">{currentQuestionIndex + 1}/{totalQuestions}</span>
-        </div>
-        <Progress value={progressPercentage} className="h-2" />
-      </div>
-    );
-  };
-
   return (
     <Layout showProgress={step === FlowStep.QUIZ}>
       {step === FlowStep.INTRO && (
-        <div className="max-w-3xl mx-auto text-center animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Discover Your Career Path
-          </h1>
-          <p className="text-xl mb-8">
-            Take our personality assessment to find the perfect careers that match your unique traits and interests
-          </p>
-          
-          <div className="bg-white rounded-xl p-6 shadow-lg mb-10">
-            <h2 className="text-2xl font-bold mb-4">How It Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">1</span>
-                </div>
-                <h3 className="font-medium mb-1">Take the Quiz</h3>
-                <p className="text-sm text-muted-foreground">
-                  Answer personality questions about how you think and work
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">2</span>
-                </div>
-                <h3 className="font-medium mb-1">Get Your Profile</h3>
-                <p className="text-sm text-muted-foreground">
-                  Discover your personality type and unique strengths
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">3</span>
-                </div>
-                <h3 className="font-medium mb-1">Explore Careers</h3>
-                <p className="text-sm text-muted-foreground">
-                  See personalized career recommendations that match your profile
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <Button onClick={startQuiz} size="lg">
-            Start Your Journey <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-          <p className="text-sm text-muted-foreground mt-4">
-            Takes about 10-15 minutes to complete
-          </p>
-        </div>
+        <IntroSection onStart={startQuiz} />
       )}
-      
+
       {step === FlowStep.QUIZ && (
-        <div className="swipe-container">
-          {renderProgressBar()}
-          <QuizCard
-            question={quizQuestions[currentQuestionIndex]}
-            onNext={handleNextQuestion}
-          />
-        </div>
+        <QuizSection
+          question={quizQuestions[currentQuestionIndex]}
+          onNext={handleNextQuestion}
+          progress={progressPercentage}
+          current={currentQuestionIndex}
+          total={totalQuestions}
+        />
       )}
-      
+
       {step === FlowStep.PREMIUM_CTA && (
-        <PremiumUpgrade onContinue={handlePremiumChoice} />
+        <PremiumCTASection onContinue={handlePremiumChoice} />
       )}
-      
+
       {step === FlowStep.USER_INFO && (
-        <div className="swipe-container">
-          <UserInfoForm onComplete={handleUserInfoComplete} />
-        </div>
+        <UserInfoSection onComplete={handleUserInfoComplete} />
       )}
-      
+
       {step === FlowStep.RESULTS && (
-        <PersonalityResult
-          onContinue={() => setStep(FlowStep.CAREERS)}
-        />
+        <ResultsSection onContinue={() => setStep(FlowStep.CAREERS)} />
       )}
-      
+
       {step === FlowStep.CAREERS && (
-        <CareerList
-          onViewCareerDetails={handleViewCareerDetails}
-        />
+        <CareersSection onViewCareerDetails={handleViewCareerDetails} />
       )}
-      
+
       {step === FlowStep.CAREER_DETAIL && selectedCareerId && (
-        <CareerDetail
+        <CareerDetailSection
           careerId={selectedCareerId}
           onBack={handleBackToCareerList}
         />
       )}
-      
+
       {step === FlowStep.SHARE && (
-        <ShareResults
-          onRestartQuiz={handleRestartQuiz}
-        />
+        <ShareSection onRestartQuiz={handleRestartQuiz} />
       )}
-      
+
       {(step === FlowStep.CAREERS || step === FlowStep.CAREER_DETAIL) && (
         <div className="max-w-4xl mx-auto mt-10 text-center">
           <Button onClick={() => setStep(FlowStep.SHARE)}>
