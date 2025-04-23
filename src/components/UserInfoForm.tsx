@@ -12,7 +12,8 @@ interface UserInfoFormProps {
 }
 
 const UserInfoForm: React.FC<UserInfoFormProps> = ({ onComplete }) => {
-  const { birthdate, setBirthdate, email, setEmail, setZodiacSign } = usePersonality();
+  const { birthdate, setBirthdate, email, setEmail, name, setName, setZodiacSign } = usePersonality();
+  const [nameError, setNameError] = React.useState<string>("");
   const [emailError, setEmailError] = React.useState<string>("");
   const [birthdateError, setBirthdateError] = React.useState<string>("");
 
@@ -25,11 +26,17 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onComplete }) => {
     e.preventDefault();
     
     // Reset errors
+    setNameError("");
     setEmailError("");
     setBirthdateError("");
     
     // Validate fields
     let isValid = true;
+    
+    if (!name.trim()) {
+      setNameError("Please enter your name");
+      isValid = false;
+    }
     
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address");
@@ -57,6 +64,27 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onComplete }) => {
       </p>
       
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="name">Your Name</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Jane Doe"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setNameError("");
+            }}
+            className={nameError ? "border-destructive" : ""}
+          />
+          {nameError && (
+            <p className="text-sm text-destructive">{nameError}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            We'll use this to personalize your results
+          </p>
+        </div>
+        
         <div className="space-y-2">
           <Label htmlFor="birthdate">Your Birthdate</Label>
           <Input

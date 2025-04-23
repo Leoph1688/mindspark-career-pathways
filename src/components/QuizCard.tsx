@@ -4,15 +4,16 @@ import { usePersonality } from "@/context/PersonalityContext";
 import { QuizQuestion } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 
 interface QuizCardProps {
   question: QuizQuestion;
   onNext: () => void;
+  isPremiumCTA?: boolean;
 }
 
-const QuizCard: React.FC<QuizCardProps> = ({ question, onNext }) => {
-  const { responses, setResponses } = usePersonality();
+const QuizCard: React.FC<QuizCardProps> = ({ question, onNext, isPremiumCTA = false }) => {
+  const { responses, setResponses, isPremiumUser } = usePersonality();
   const [sliderValue, setSliderValue] = useState<number>(
     responses[question.id] || 4
   );
@@ -32,6 +33,58 @@ const QuizCard: React.FC<QuizCardProps> = ({ question, onNext }) => {
     }));
     onNext();
   };
+
+  // Render premium upgrade CTA instead of question
+  if (isPremiumCTA) {
+    return (
+      <div className="quiz-card animate-fade-in text-center">
+        <div className="py-8 px-4">
+          <div className="mb-6 bg-gradient-to-r from-primary/20 to-accent/20 p-6 rounded-xl">
+            <Lock className="w-12 h-12 mx-auto text-primary mb-4" />
+            <h2 className="text-2xl font-bold mb-2">Unlock Your Full Personality Profile</h2>
+            <p className="text-muted-foreground mb-4">
+              You've completed the free version of the quiz (15 questions).
+              Upgrade to premium to access all 70 questions and get your complete personality profile.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="border rounded-lg p-4">
+              <h3 className="font-bold">Free Version</h3>
+              <ul className="mt-2 text-sm text-left space-y-2">
+                <li>✓ Basic MBTI type</li>
+                <li>✓ Limited trait analysis</li>
+                <li>✓ 1 career recommendation</li>
+                <li>× No detailed insights</li>
+              </ul>
+            </div>
+            
+            <div className="border border-primary bg-primary/5 rounded-lg p-4 relative">
+              <div className="absolute -top-3 right-4 bg-primary text-white text-xs px-2 py-1 rounded-full">
+                Recommended
+              </div>
+              <h3 className="font-bold">Premium Version</h3>
+              <ul className="mt-2 text-sm text-left space-y-2">
+                <li>✓ Full MBTI analysis</li>
+                <li>✓ Complete trait breakdown</li>
+                <li>✓ 5 personalized career matches</li>
+                <li>✓ Growth & AI risk assessment</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <Button className="w-full bg-primary" onClick={handleNextClick}>
+              Upgrade Now
+            </Button>
+            <Button variant="outline" className="w-full" onClick={handleNextClick}>
+              Continue with Free Version
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="quiz-card animate-fade-in">

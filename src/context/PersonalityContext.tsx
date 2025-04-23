@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from 'react';
 
 type MBTIType = 'INTJ' | 'INTP' | 'ENTJ' | 'ENTP' | 'INFJ' | 'INFP' | 'ENFJ' | 'ENFP' | 
@@ -47,6 +48,11 @@ interface PersonalityContextType {
   setQuizCompleted: React.Dispatch<React.SetStateAction<boolean>>;
   calculateMBTI: () => void;
   calculateSuggestedCareers: () => void;
+  isPremiumUser: boolean;
+  setIsPremiumUser: React.Dispatch<React.SetStateAction<boolean>>;
+  totalQuestions: number;
+  name: string;
+  setName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PersonalityContext = createContext<PersonalityContextType | undefined>(undefined);
@@ -58,9 +64,12 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [traits, setTraits] = useState<Trait[]>([]);
   const [birthdate, setBirthdate] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [zodiacSign, setZodiacSign] = useState('');
   const [suggestedCareers, setSuggestedCareers] = useState<Career[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const totalQuestions = 70; // Total number of quiz questions
 
   const calculateMBTI = () => {
     const dimensions = {
@@ -227,7 +236,17 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
     ];
 
     mockCareers.sort((a, b) => b.overallScore - a.overallScore);
-    setSuggestedCareers(mockCareers);
+    
+    // For free users, only show the lowest matching career
+    if (!isPremiumUser) {
+      // Sort in ascending order to get the lowest match first
+      mockCareers.sort((a, b) => a.overallScore - b.overallScore);
+      setSuggestedCareers([mockCareers[0]]);
+    } else {
+      // For premium users, show all careers in descending order (best matches first)
+      mockCareers.sort((a, b) => b.overallScore - a.overallScore);
+      setSuggestedCareers(mockCareers);
+    }
   };
 
   return (
@@ -245,6 +264,8 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
         setBirthdate,
         email,
         setEmail,
+        name,
+        setName,
         zodiacSign,
         setZodiacSign,
         suggestedCareers,
@@ -252,7 +273,10 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
         quizCompleted,
         setQuizCompleted,
         calculateMBTI,
-        calculateSuggestedCareers
+        calculateSuggestedCareers,
+        isPremiumUser,
+        setIsPremiumUser,
+        totalQuestions
       }}
     >
       {children}

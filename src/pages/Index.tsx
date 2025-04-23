@@ -11,10 +11,12 @@ import { usePersonality } from "@/context/PersonalityContext";
 import { quizQuestions } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 enum FlowStep {
   INTRO = 'intro',
   QUIZ = 'quiz',
+  PREMIUM_CTA = 'premium_cta',
   USER_INFO = 'user_info',
   RESULTS = 'results',
   CAREERS = 'careers',
@@ -39,19 +41,37 @@ const Index = () => {
     setZodiacSign,
     setBirthdate,
     setEmail,
-    setSuggestedCareers
+    setSuggestedCareers,
+    isPremiumUser,
+    totalQuestions
   } = usePersonality();
+
+  // Calculate progress percentage
+  const progressPercentage = Math.floor((currentQuestionIndex / totalQuestions) * 100);
 
   const startQuiz = () => {
     setStep(FlowStep.QUIZ);
   };
 
   const handleNextQuestion = () => {
+    // For free users, show premium CTA after 15 questions
+    if (!isPremiumUser && currentQuestionIndex === 14) {
+      setStep(FlowStep.PREMIUM_CTA);
+      return;
+    }
+    
     if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setStep(FlowStep.USER_INFO);
     }
+  };
+
+  const handlePremiumChoice = () => {
+    // In a real app, this would handle payment processing
+    // For now, just continue with the quiz
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    setStep(FlowStep.QUIZ);
   };
 
   const handleUserInfoComplete = () => {
@@ -84,6 +104,19 @@ const Index = () => {
     
     // Go back to the intro
     setStep(FlowStep.INTRO);
+  };
+  
+  // Progress indicator for the quiz
+  const renderProgressBar = () => {
+    return (
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium">Your Progress</span>
+          <span className="text-sm text-muted-foreground">{currentQuestionIndex + 1}/{totalQuestions}</span>
+        </div>
+        <Progress value={progressPercentage} className="h-2" />
+      </div>
+    );
   };
 
   return (
@@ -141,9 +174,20 @@ const Index = () => {
       
       {step === FlowStep.QUIZ && (
         <div className="swipe-container">
+          {renderProgressBar()}
           <QuizCard
             question={quizQuestions[currentQuestionIndex]}
             onNext={handleNextQuestion}
+          />
+        </div>
+      )}
+      
+      {step === FlowStep.PREMIUM_CTA && (
+        <div className="swipe-container">
+          <QuizCard
+            question={quizQuestions[currentQuestionIndex]} 
+            onNext={handlePremiumChoice}
+            isPremiumCTA={true}
           />
         </div>
       )}
