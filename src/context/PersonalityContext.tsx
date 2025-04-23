@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState } from 'react';
 
 type MBTIType = 'INTJ' | 'INTP' | 'ENTJ' | 'ENTP' | 'INFJ' | 'INFP' | 'ENFJ' | 'ENFP' | 
@@ -64,8 +63,6 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [quizCompleted, setQuizCompleted] = useState(false);
 
   const calculateMBTI = () => {
-    // Simplified MBTI calculation based on responses
-    // In a real app, this would be more sophisticated
     const dimensions = {
       E: 0, I: 0, // Extraversion vs Introversion
       S: 0, N: 0, // Sensing vs Intuition
@@ -73,7 +70,6 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
       J: 0, P: 0  // Judging vs Perceiving
     };
 
-    // Example mapping (in a real app, each question would be mapped to dimensions)
     Object.entries(responses).forEach(([questionId, answer]) => {
       const qId = parseInt(questionId);
       if (qId % 8 === 0 || qId % 8 === 1) {
@@ -90,7 +86,6 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
     const type = `${dimensions.E > dimensions.I ? 'E' : 'I'}${dimensions.S > dimensions.N ? 'S' : 'N'}${dimensions.T > dimensions.F ? 'T' : 'F'}${dimensions.J > dimensions.P ? 'J' : 'P'}` as MBTIType;
     setMbtiType(type);
 
-    // Calculate trait values
     const newTraits: Trait[] = [
       {
         name: 'Extraversion',
@@ -138,8 +133,6 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
   };
 
   const calculateSuggestedCareers = () => {
-    // In a real app, this would be based on a more sophisticated algorithm
-    // that considers MBTI type, zodiac sign, and other factors
     const mockCareers: Career[] = [
       {
         id: 1,
@@ -233,7 +226,6 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
       }
     ];
 
-    // Sort by overall score
     mockCareers.sort((a, b) => b.overallScore - a.overallScore);
     setSuggestedCareers(mockCareers);
   };
