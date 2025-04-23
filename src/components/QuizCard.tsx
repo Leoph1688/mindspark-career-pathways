@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { usePersonality } from "@/context";
 import { QuizQuestion } from "@/data/quizQuestions";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { ArrowRight, Lock } from "lucide-react";
 
 interface QuizCardProps {
@@ -20,27 +19,19 @@ const QuizCard: React.FC<QuizCardProps> = ({
   questionNumber
 }) => {
   const { responses, setResponses, isPremiumUser } = usePersonality();
-  const [sliderValue, setSliderValue] = useState<number>(
-    responses[question.id] || 4
-  );
-  const [hasInteracted, setHasInteracted] = useState<boolean>(
-    responses[question.id] !== undefined
+  const [selectedValue, setSelectedValue] = useState<number | null>(
+    responses[question.id] ?? null
   );
 
-  const handleSliderChange = (newValue: number[]) => {
-    setSliderValue(newValue[0]);
-    setHasInteracted(true);
-  };
-
-  const handleNextClick = () => {
+  const handleOptionSelect = (value: number) => {
+    setSelectedValue(value);
     setResponses((prev) => ({
       ...prev,
-      [question.id]: sliderValue,
+      [question.id]: value,
     }));
-    onNext();
   };
 
-  // Render premium upgrade CTA instead of question
+  // Premium CTA card
   if (isPremiumCTA) {
     return (
       <div className="quiz-card animate-fade-in text-center">
@@ -49,41 +40,43 @@ const QuizCard: React.FC<QuizCardProps> = ({
             <Lock className="w-12 h-12 mx-auto text-primary mb-4" />
             <h2 className="text-2xl font-bold mb-2">Unlock Your Full Personality Profile</h2>
             <p className="text-muted-foreground mb-4">
-              You've completed the free version of the quiz (15 questions).
-              Upgrade to premium to access all 70 questions and get your complete personality profile.
+              Complete access to your detailed personality insights including career matches 
+              and growth opportunities.
             </p>
+            <div className="text-lg font-semibold mb-2">$9.99</div>
+            <p className="text-sm text-muted-foreground">One-time payment for lifetime access</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="border rounded-lg p-4">
               <h3 className="font-bold">Free Version</h3>
               <ul className="mt-2 text-sm text-left space-y-2">
-                <li>✓ Basic MBTI type</li>
+                <li>✓ Basic personality type</li>
                 <li>✓ Limited trait analysis</li>
-                <li>✓ 1 career recommendation</li>
+                <li>✓ 1 career match</li>
                 <li>× No detailed insights</li>
               </ul>
             </div>
             
             <div className="border border-primary bg-primary/5 rounded-lg p-4 relative">
               <div className="absolute -top-3 right-4 bg-primary text-white text-xs px-2 py-1 rounded-full">
-                Recommended
+                Premium
               </div>
               <h3 className="font-bold">Premium Version</h3>
               <ul className="mt-2 text-sm text-left space-y-2">
-                <li>✓ Full MBTI analysis</li>
+                <li>✓ Detailed personality analysis</li>
                 <li>✓ Complete trait breakdown</li>
-                <li>✓ 5 personalized career matches</li>
-                <li>✓ Growth & AI risk assessment</li>
+                <li>✓ 5 career matches</li>
+                <li>✓ Growth insights</li>
               </ul>
             </div>
           </div>
           
           <div className="space-y-4">
-            <Button className="w-full bg-primary" onClick={handleNextClick}>
-              Upgrade Now
+            <Button className="w-full bg-primary" onClick={onNext}>
+              Upgrade Now - $9.99
             </Button>
-            <Button variant="outline" className="w-full" onClick={handleNextClick}>
+            <Button variant="outline" className="w-full" onClick={onNext}>
               Continue with Free Version
             </Button>
           </div>
@@ -92,40 +85,46 @@ const QuizCard: React.FC<QuizCardProps> = ({
     );
   }
 
+  // Regular question card
   return (
-    <div className="quiz-card animate-fade-in">
+    <div className="quiz-card animate-fade-in p-6">
       {questionNumber && (
         <div className="text-sm text-muted-foreground mb-2">
           Question {questionNumber} of 70
         </div>
       )}
-      <h2 className="text-xl font-semibold mb-6 text-center">{question.text}</h2>
       
-      <div className="my-10">
-        <Slider
-          defaultValue={[sliderValue]}
-          max={7}
-          min={1}
-          step={1}
-          onValueChange={handleSliderChange}
-          className="my-8"
-        />
+      <h2 className="text-xl font-semibold mb-8 text-center">{question.text}</h2>
+      
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <Button
+          variant={selectedValue === 1 ? "default" : "outline"}
+          className={`h-auto py-6 px-4 flex flex-col items-center justify-center text-center ${
+            selectedValue === 1 ? "bg-primary" : ""
+          }`}
+          onClick={() => handleOptionSelect(1)}
+        >
+          <span className="text-lg mb-2">A</span>
+          <span>{question.leftOption}</span>
+        </Button>
         
-        <div className="flex justify-between text-sm">
-          <div className="max-w-[45%] text-left">
-            <p className="text-muted-foreground">{question.leftOption}</p>
-          </div>
-          <div className="max-w-[45%] text-right">
-            <p className="text-muted-foreground">{question.rightOption}</p>
-          </div>
-        </div>
+        <Button
+          variant={selectedValue === 7 ? "default" : "outline"}
+          className={`h-auto py-6 px-4 flex flex-col items-center justify-center text-center ${
+            selectedValue === 7 ? "bg-primary" : ""
+          }`}
+          onClick={() => handleOptionSelect(7)}
+        >
+          <span className="text-lg mb-2">B</span>
+          <span>{question.rightOption}</span>
+        </Button>
       </div>
       
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center">
         <Button
-          onClick={handleNextClick}
+          onClick={onNext}
           className="w-full sm:w-auto px-8"
-          disabled={!hasInteracted}
+          disabled={selectedValue === null}
           size="lg"
         >
           Continue <ArrowRight className="ml-2 h-4 w-4" />
@@ -136,4 +135,3 @@ const QuizCard: React.FC<QuizCardProps> = ({
 };
 
 export default QuizCard;
-
