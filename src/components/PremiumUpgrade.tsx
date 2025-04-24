@@ -41,31 +41,30 @@ const PremiumUpgrade: React.FC<PremiumUpgradeProps> = ({ onContinue }) => {
             </div>
           </div>
           
-          <h1 className="text-4xl font-bold text-center mb-4">
-            Unlock Your Full Personality Profile
+          <h1 className="text-3xl font-bold text-center mb-4">
+            Unlock Full Personality Profile
           </h1>
           
-          <p className="text-lg text-center text-gray-700 mb-6">
-            You've completed the free version of the quiz (15 questions). 
-            Upgrade to premium to access all 70 questions and get your 
-            complete personality profile.
+          <p className="text-sm text-center text-gray-700 mb-6">
+            Complete the free quiz (15 questions) and upgrade to access all 70 questions 
+            and get your comprehensive personality insights.
           </p>
         </Card>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Free Version</h2>
-            <ul className="space-y-3">
+            <h2 className="text-xl font-bold mb-4">Free Version</h2>
+            <ul className="space-y-2 text-sm">
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-gray-600" />
+                <Check className="h-4 w-4 mr-2 text-gray-600" />
                 <span>Basic MBTI type</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-gray-600" />
+                <Check className="h-4 w-4 mr-2 text-gray-600" />
                 <span>Limited trait analysis</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-gray-600" />
+                <Check className="h-4 w-4 mr-2 text-gray-600" />
                 <span>1 career recommendation</span>
               </li>
             </ul>
@@ -80,30 +79,30 @@ const PremiumUpgrade: React.FC<PremiumUpgradeProps> = ({ onContinue }) => {
           </Card>
           
           <Card className="p-6 border-purple-400 relative">
-            <div className="absolute -top-3 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            <div className="absolute -top-3 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium">
               Recommended
             </div>
             
-            <h2 className="text-2xl font-bold mb-4">Premium Version</h2>
-            <ul className="space-y-3">
+            <h2 className="text-xl font-bold mb-4">Premium Version</h2>
+            <ul className="space-y-2 text-sm">
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-purple-600" />
+                <Check className="h-4 w-4 mr-2 text-purple-600" />
                 <span>Full MBTI analysis</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-purple-600" />
+                <Check className="h-4 w-4 mr-2 text-purple-600" />
                 <span>Complete trait breakdown</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-purple-600" />
+                <Check className="h-4 w-4 mr-2 text-purple-600" />
                 <span>5 career recommendations</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-purple-600" />
-                <span>Personalized strength insights</span>
+                <Check className="h-4 w-4 mr-2 text-purple-600" />
+                <span>Personalized strengths</span>
               </li>
               <li className="flex items-center">
-                <Check className="h-5 w-5 mr-2 text-purple-600" />
+                <Check className="h-4 w-4 mr-2 text-purple-600" />
                 <span>Learning style assessment</span>
               </li>
             </ul>
@@ -112,12 +111,12 @@ const PremiumUpgrade: React.FC<PremiumUpgradeProps> = ({ onContinue }) => {
               className="w-full mt-6 bg-purple-500 hover:bg-purple-600"
               onClick={handleUpgrade}
             >
-              Upgrade Now - $9.99
+              Upgrade Now - $5.99
             </Button>
           </Card>
         </div>
         
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-xs text-gray-500">
           © 2025 MindSpark Career Pathways. All rights reserved.
         </p>
       </div>
