@@ -1,7 +1,7 @@
+
 import React from "react";
 import { usePersonality } from "@/context";
 import { personalityTypes } from "@/data/personalityTypes";
-import { getZodiacEmoji, getZodiacDescription } from "@/utils/zodiacUtils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,12 +12,9 @@ interface PersonalityResultProps {
 }
 
 const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => {
-  const { mbtiType, traits, zodiacSign, name, isPremiumUser, setIsPremiumUser } = usePersonality();
+  const { mbtiType, traits, name, isPremiumUser, setIsPremiumUser } = usePersonality();
   
   const personalityData = mbtiType ? personalityTypes[mbtiType] : null;
-  
-  const zodiacEmoji = getZodiacEmoji(zodiacSign);
-  const zodiacDescription = getZodiacDescription(zodiacSign);
   
   if (!personalityData) {
     return <div>Loading your results...</div>;
@@ -33,10 +30,10 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
     <ScrollArea className="h-[80vh] mx-auto">
       <div className="max-w-4xl mx-auto p-4 animate-fade-in">
         <h1 className="text-3xl font-bold text-center mb-2">
-          {name ? `${name}'s` : 'Your'} Personality Profile
+          Hello, {name}!
         </h1>
         <p className="text-center text-muted-foreground mb-8">
-          Based on your responses, here's what we've discovered about you
+          Here's your personalized career path report based on your personality profile
         </p>
         
         {!isPremiumUser && (
@@ -56,55 +53,45 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
           </Card>
         )}
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="p-6 col-span-1 lg:col-span-2 bg-secondary bg-opacity-50">
-            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-              <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-3xl md:text-4xl font-bold text-white">{mbtiType}</span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-2">{personalityData.name}</h2>
-                <p className="text-muted-foreground mb-4">{personalityData.description}</p>
-                
-                {isPremiumUser ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <h3 className="font-medium mb-2">Key Strengths</h3>
-                      <ul className="list-disc pl-5 text-sm space-y-1">
-                        {personalityData.strengths.map((strength, index) => (
-                          <li key={index}>{strength}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">Growth Areas</h3>
-                      <ul className="list-disc pl-5 text-sm space-y-1">
-                        {personalityData.challenges.map((challenge, index) => (
-                          <li key={index}>{challenge}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-muted/20 border border-dashed rounded-lg p-4 flex items-center gap-4">
-                    <Lock className="w-6 h-6 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
-                      Detailed strengths and growth areas available in the premium version
-                    </p>
-                  </div>
-                )}
-              </div>
+        <Card className="p-6 bg-secondary bg-opacity-50">
+          <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-3xl md:text-4xl font-bold text-white">{mbtiType}</span>
             </div>
-          </Card>
-          
-          <Card className="p-6 bg-secondary bg-opacity-50">
-            <div className="text-center mb-4">
-              <span className="text-4xl">{zodiacEmoji}</span>
-              <h3 className="text-xl font-bold mt-2">{zodiacSign}</h3>
+            <div>
+              <h2 className="text-2xl font-bold mb-2">{personalityData.name}</h2>
+              <p className="text-muted-foreground mb-4">{personalityData.description}</p>
+              
+              {isPremiumUser ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="font-medium mb-2">Key Strengths</h3>
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      {personalityData.strengths.map((strength, index) => (
+                        <li key={index}>{strength}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-2">Growth Areas</h3>
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      {personalityData.challenges.map((challenge, index) => (
+                        <li key={index}>{challenge}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-muted/20 border border-dashed rounded-lg p-4 flex items-center gap-4">
+                  <Lock className="w-6 h-6 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Detailed strengths and growth areas available in the premium version
+                  </p>
+                </div>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">Your cosmic personality complements your MBTI type.</p>
-          </Card>
-        </div>
+          </div>
+        </Card>
         
         <Card className="p-6 mt-6">
           <div className="flex justify-between items-center mb-4">
