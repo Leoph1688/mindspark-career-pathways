@@ -5,9 +5,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface LayoutProps {
   children: React.ReactNode;
+  showProgress?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, showProgress = false }) => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="py-4 px-6 border-b border-border sticky top-0 z-50 bg-background">

@@ -1,5 +1,7 @@
 
 import { MBTIType, Trait, Career } from '@/types/personality';
+import { careerTraitsMap } from '@/data/careerTraits';
+import { CareerMatchScore } from '@/types/careerMatch';
 
 // Calculates MBTI type and traits from responses
 export function calculateMBTI(
@@ -68,19 +70,132 @@ export function calculateMBTI(
   setTraits(newTraits);
 }
 
+// Calculate MBTI match score between user traits and career requirements
+function calculateMBTIMatchScore(mbtiType: MBTIType, careerName: string): number {
+  // Get career traits data
+  const careerData = careerTraitsMap[careerName];
+  
+  if (!careerData || !mbtiType) return 50; // Default value if data not found
+  
+  // Direct MBTI compatibility score if available
+  if (careerData.mbtiCompatibility[mbtiType]) {
+    return careerData.mbtiCompatibility[mbtiType] * 100;
+  }
+  
+  // Fallback to average score if specific type not found
+  return 60; // Default compatibility score
+}
+
+// Calculate horoscope match score
+function calculateHoroscopeMatchScore(zodiacSign: string, careerName: string): number {
+  const careerData = careerTraitsMap[careerName];
+  
+  if (!careerData || !zodiacSign) return 50; // Default value if data not found
+  
+  // Get zodiac compatibility score if available
+  if (careerData.zodiacCompatibility[zodiacSign]) {
+    return careerData.zodiacCompatibility[zodiacSign] * 100;
+  }
+  
+  // Fallback to average score if specific zodiac not found
+  return 60; // Default compatibility score
+}
+
+// Calculate reinforcement score (similarity between user traits and career key traits)
+function calculateReinforcementScore(userTraits: Trait[], careerName: string): number {
+  const career = careerTraitsMap[careerName];
+  
+  if (!career) return 50; // Default if career not found
+  
+  // For demonstration, we'll convert user trait names to a standardized list
+  const standardTraitNames = {
+    'Extraversion': 'Extraverted',
+    'Introversion': 'Introverted',
+    'Sensing': 'Practical',
+    'Intuition': 'Creative',
+    'Thinking': 'Analytical',
+    'Feeling': 'Empathetic',
+    'Judging': 'Organized',
+    'Perceiving': 'Adaptable'
+  };
+  
+  // Extract top user traits (those over 70%)
+  const userTopTraits = userTraits
+    .filter(trait => trait.value > 70)
+    .map(trait => standardTraitNames[trait.name as keyof typeof standardTraitNames] || trait.name);
+  
+  // Count matches between user's top traits and career key traits
+  let matchCount = 0;
+  career.keyTraits.forEach(careerTrait => {
+    if (userTopTraits.includes(careerTrait)) {
+      matchCount++;
+    }
+  });
+  
+  // Calculate percentage match
+  const matchScore = career.keyTraits.length > 0 
+    ? (matchCount / career.keyTraits.length) * 100 
+    : 50;
+  
+  return matchScore;
+}
+
+// Calculate career match scores using the weighting algorithm
+function calculateCareerMatchScores(
+  mbtiType: MBTIType,
+  traits: Trait[],
+  zodiacSign: string,
+  careers: Career[]
+): Career[] {
+  return careers.map(career => {
+    // Calculate component scores
+    const mbtiMatchScore = calculateMBTIMatchScore(mbtiType, career.title);
+    const horoscopeMatchScore = calculateHoroscopeMatchScore(zodiacSign, career.title);
+    const reinforcementScore = calculateReinforcementScore(traits, career.title);
+    const userModifierScore = 75; // Default modifier score for now
+    
+    // Apply the weighting algorithm:
+    // CareerScore = (MBTI_Match_Score * 0.5) + (Horoscope_Match_Score * 0.3) + 
+    //               (Reinforcement_Score * 0.1) + (User_Modifier_Score * 0.1)
+    const weightedScore = Math.round(
+      (mbtiMatchScore * 0.5) +
+      (horoscopeMatchScore * 0.3) +
+      (reinforcementScore * 0.1) +
+      (userModifierScore * 0.1)
+    );
+    
+    // Personality Fit is primarily based on MBTI match
+    const personalityFit = Math.round((mbtiMatchScore * 0.7) + (horoscopeMatchScore * 0.3));
+    
+    // Update career scores
+    return {
+      ...career,
+      personalityFit,
+      overallScore: weightedScore
+    };
+  });
+}
+
 // Filter/sort and return career suggestions
 export function calculateSuggestedCareers(
   isPremiumUser: boolean,
   setSuggestedCareers: (careers: Career[]) => void,
-  mockCareers: Career[]
+  mockCareers: Career[],
+  mbtiType: MBTIType,
+  traits: Trait[],
+  zodiacSign: string
 ) {
-  const sortedCareers = [...mockCareers];
-  sortedCareers.sort((a, b) => b.overallScore - a.overallScore);
+  // Calculate scores for each career
+  const scoredCareers = calculateCareerMatchScores(mbtiType, traits, zodiacSign, mockCareers);
+  
+  // Sort careers by overall score
+  scoredCareers.sort((a, b) => b.overallScore - a.overallScore);
+  
   if (!isPremiumUser) {
-    sortedCareers.sort((a, b) => a.overallScore - b.overallScore);
-    setSuggestedCareers([sortedCareers[0]]);
+    // For free users, return only the top match
+    setSuggestedCareers([scoredCareers[0]]);
   } else {
-    sortedCareers.sort((a, b) => b.overallScore - a.overallScore);
-    setSuggestedCareers(sortedCareers);
+    // For premium users, return all scored careers
+    setSuggestedCareers(scoredCareers);
   }
 }

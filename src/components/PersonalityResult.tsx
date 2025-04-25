@@ -33,7 +33,7 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
           Hello, {name}!
         </h1>
         <p className="text-center text-muted-foreground mb-8">
-          Here's your personalized career path report based on your personality profile
+          This is your personalized career path report based on your personality profile
         </p>
         
         {!isPremiumUser && (

@@ -24,7 +24,14 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
   };
 
   const handleCalculateSuggestedCareers = () => {
-    calculateSuggestedCareers(isPremiumUser, setSuggestedCareers, mockCareers);
+    calculateSuggestedCareers(
+      isPremiumUser, 
+      setSuggestedCareers, 
+      mockCareers, 
+      mbtiType,
+      traits,
+      zodiacSign
+    );
   };
 
   return (
