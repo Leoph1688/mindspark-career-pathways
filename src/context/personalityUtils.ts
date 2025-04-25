@@ -22,51 +22,65 @@ export function calculateMBTI(
       answer > 3 ? (dimensions.J += answer - 3) : (dimensions.P += 4 - answer);
     }
   });
-  const type = `${dimensions.E > dimensions.I ? 'E' : 'I'}${dimensions.S > dimensions.N ? 'S' : 'N'}${dimensions.T > dimensions.F ? 'T' : 'F'}${dimensions.J > dimensions.P ? 'J' : 'P'}` as MBTIType;
+  
+  // Default to a certain type if not enough data is available
+  const hasSufficientData = Object.values(dimensions).some(val => val > 0);
+  
+  // Calculate MBTI type only if there is sufficient data
+  const type = hasSufficientData
+    ? `${dimensions.E > dimensions.I ? 'E' : 'I'}${dimensions.S > dimensions.N ? 'S' : 'N'}${dimensions.T > dimensions.F ? 'T' : 'F'}${dimensions.J > dimensions.P ? 'J' : 'P'}` as MBTIType
+    : 'ENFP' as MBTIType; // Default to ENFP if no data
+  
   setMbtiType(type);
+
+  // Calculate percentages safely to avoid division by zero
+  const calculatePercentage = (value: number, total: number): number => {
+    return total > 0 ? Math.round((value / total) * 100) : 50; // Default to 50% if no data
+  };
 
   const newTraits: Trait[] = [
     {
       name: 'Extraversion',
-      value: Math.round((dimensions.E / (dimensions.E + dimensions.I)) * 100),
+      value: calculatePercentage(dimensions.E, dimensions.E + dimensions.I),
       description: 'How energized you are by social interaction'
     },
     {
       name: 'Sensing',
-      value: Math.round((dimensions.S / (dimensions.S + dimensions.N)) * 100),
+      value: calculatePercentage(dimensions.S, dimensions.S + dimensions.N),
       description: 'How you gather information from the world'
     },
     {
       name: 'Thinking',
-      value: Math.round((dimensions.T / (dimensions.T + dimensions.F)) * 100),
+      value: calculatePercentage(dimensions.T, dimensions.T + dimensions.F),
       description: 'How you make decisions'
     },
     {
       name: 'Judging',
-      value: Math.round((dimensions.J / (dimensions.J + dimensions.P)) * 100),
+      value: calculatePercentage(dimensions.J, dimensions.J + dimensions.P),
       description: 'How you approach structure and planning'
     },
     {
       name: 'Introversion',
-      value: Math.round((dimensions.I / (dimensions.E + dimensions.I)) * 100),
+      value: calculatePercentage(dimensions.I, dimensions.E + dimensions.I),
       description: 'How you recharge your energy'
     },
     {
       name: 'Intuition',
-      value: Math.round((dimensions.N / (dimensions.S + dimensions.N)) * 100),
+      value: calculatePercentage(dimensions.N, dimensions.S + dimensions.N),
       description: 'How you process information'
     },
     {
       name: 'Feeling',
-      value: Math.round((dimensions.F / (dimensions.T + dimensions.F)) * 100),
+      value: calculatePercentage(dimensions.F, dimensions.T + dimensions.F),
       description: 'How you consider emotions in decisions'
     },
     {
       name: 'Perceiving',
-      value: Math.round((dimensions.P / (dimensions.J + dimensions.P)) * 100),
+      value: calculatePercentage(dimensions.P, dimensions.J + dimensions.P),
       description: 'How flexible you are with plans'
     }
   ];
+  
   setTraits(newTraits);
 }
 

@@ -26,6 +26,14 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
   
   const displayTraits = isPremiumUser ? traits : traits.slice(0, 4);
   
+  // Helper function to format percentage values safely
+  const formatPercentage = (value: number | null | undefined): string => {
+    if (value === null || value === undefined || isNaN(value)) {
+      return "0%";
+    }
+    return `${value}%`;
+  };
+  
   return (
     <ScrollArea className="h-[80vh] mx-auto">
       <div className="max-w-4xl mx-auto p-4 animate-fade-in">
@@ -108,12 +116,12 @@ const PersonalityResult: React.FC<PersonalityResultProps> = ({ onContinue }) => 
               <div key={index}>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm font-medium">{trait.name}</span>
-                  <span className="text-sm text-muted-foreground">{trait.value}%</span>
+                  <span className="text-sm text-muted-foreground">{formatPercentage(trait.value)}</span>
                 </div>
                 <div className="trait-bar">
                   <div 
                     className="trait-bar-fill" 
-                    style={{ width: `${trait.value}%` }}
+                    style={{ width: `${trait.value || 0}%` }}
                   ></div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">{trait.description}</p>

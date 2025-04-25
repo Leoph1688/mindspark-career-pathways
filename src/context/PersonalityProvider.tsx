@@ -20,17 +20,75 @@ export const PersonalityProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const totalQuestions = 70;
 
   const handleCalculateMBTI = () => {
-    calculateMBTI(responses, setMbtiType, setTraits);
+    // Make sure we initialize traits with default values to prevent NaN
+    if (Object.keys(responses).length === 0) {
+      // If no responses, set a default MBTI type
+      setMbtiType('ENFP');
+      
+      // Set default traits to prevent NaN values
+      setTraits([
+        {
+          name: 'Extraversion',
+          value: 50,
+          description: 'How energized you are by social interaction'
+        },
+        {
+          name: 'Sensing',
+          value: 50,
+          description: 'How you gather information from the world'
+        },
+        {
+          name: 'Thinking',
+          value: 50,
+          description: 'How you make decisions'
+        },
+        {
+          name: 'Judging',
+          value: 50,
+          description: 'How you approach structure and planning'
+        },
+        {
+          name: 'Introversion',
+          value: 50,
+          description: 'How you recharge your energy'
+        },
+        {
+          name: 'Intuition',
+          value: 50,
+          description: 'How you process information'
+        },
+        {
+          name: 'Feeling',
+          value: 50,
+          description: 'How you consider emotions in decisions'
+        },
+        {
+          name: 'Perceiving',
+          value: 50,
+          description: 'How flexible you are with plans'
+        }
+      ]);
+    } else {
+      // Calculate MBTI based on actual responses
+      calculateMBTI(responses, setMbtiType, setTraits);
+    }
   };
 
   const handleCalculateSuggestedCareers = () => {
+    // Ensure we have valid values for calculation
+    const validMbtiType = mbtiType || 'ENFP';
+    const validTraits = traits.length > 0 ? traits : [
+      { name: 'Extraversion', value: 50, description: 'How energized you are by social interaction' }
+    ];
+    const validZodiacSign = zodiacSign || 'Aries';
+
     calculateSuggestedCareers(
       isPremiumUser, 
       setSuggestedCareers, 
       mockCareers, 
-      mbtiType,
-      traits,
-      zodiacSign
+      validMbtiType,
+      validTraits,
+      validZodiacSign
     );
   };
 

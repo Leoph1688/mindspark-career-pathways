@@ -38,13 +38,21 @@ const CareerList: React.FC<CareerListProps> = ({ onViewCareerDetails }) => {
     // In a real app, this would handle payment processing
     setIsPremiumUser(true);
   };
+
+  // Helper function to format percentage values safely
+  const formatPercentage = (value: number | null | undefined): string => {
+    if (value === null || value === undefined || isNaN(value)) {
+      return "0%";
+    }
+    return `${value}%`;
+  };
   
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold mb-2">Your Career Recommendations</h1>
         <p className="text-muted-foreground">
-          Based on your {mbtiType} personality type and {zodiacSign} sign
+          Based on your {mbtiType || 'personality'} {zodiacSign ? `and ${zodiacSign} sign` : ''}
         </p>
       </div>
       
@@ -138,10 +146,13 @@ const CareerList: React.FC<CareerListProps> = ({ onViewCareerDetails }) => {
                         <div className="trait-bar w-16 mr-2">
                           <div 
                             className="trait-bar-fill" 
-                            style={{ width: `${career.personalityFit}%`, backgroundColor: getColorForRating(career.personalityFit) }}
+                            style={{ 
+                              width: `${career.personalityFit || 0}%`, 
+                              backgroundColor: getColorForRating(career.personalityFit || 0) 
+                            }}
                           ></div>
                         </div>
-                        <span className={`text-sm font-medium`}>{career.personalityFit}%</span>
+                        <span className="text-sm font-medium">{formatPercentage(career.personalityFit)}</span>
                       </div>
                     </div>
                     
@@ -151,10 +162,13 @@ const CareerList: React.FC<CareerListProps> = ({ onViewCareerDetails }) => {
                         <div className="trait-bar w-16 mr-2">
                           <div 
                             className="trait-bar-fill" 
-                            style={{ width: `${career.salarySatisfaction}%`, backgroundColor: getColorForRating(career.salarySatisfaction) }}
+                            style={{ 
+                              width: `${career.salarySatisfaction || 0}%`, 
+                              backgroundColor: getColorForRating(career.salarySatisfaction || 0) 
+                            }}
                           ></div>
                         </div>
-                        <span className={`text-sm font-medium`}>{career.salarySatisfaction}%</span>
+                        <span className="text-sm font-medium">{formatPercentage(career.salarySatisfaction)}</span>
                       </div>
                     </div>
                     
@@ -164,10 +178,13 @@ const CareerList: React.FC<CareerListProps> = ({ onViewCareerDetails }) => {
                         <div className="trait-bar w-16 mr-2">
                           <div 
                             className="trait-bar-fill" 
-                            style={{ width: `${career.growthPotential}%`, backgroundColor: getColorForRating(career.growthPotential) }}
+                            style={{ 
+                              width: `${career.growthPotential || 0}%`, 
+                              backgroundColor: getColorForRating(career.growthPotential || 0) 
+                            }}
                           ></div>
                         </div>
-                        <span className={`text-sm font-medium`}>{career.growthPotential}%</span>
+                        <span className="text-sm font-medium">{formatPercentage(career.growthPotential)}</span>
                       </div>
                     </div>
                   </div>
@@ -175,7 +192,7 @@ const CareerList: React.FC<CareerListProps> = ({ onViewCareerDetails }) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium">Overall Match</p>
-                      <span className={`text-lg font-bold text-primary`}>{career.overallScore}%</span>
+                      <span className="text-lg font-bold text-primary">{formatPercentage(career.overallScore)}</span>
                     </div>
                     
                     <Button 
