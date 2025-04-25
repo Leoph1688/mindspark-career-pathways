@@ -13,10 +13,11 @@ export const PremiumBanner: React.FC<PremiumBannerProps> = ({ onUpgrade }) => {
     <Card className="p-6 mb-8 border-primary/50 bg-primary/5">
       <div className="flex flex-col md:flex-row items-center gap-6">
         <div className="flex-1">
-          <h2 className="text-xl font-bold mb-2">Unlock All Career Matches</h2>
+          <h2 className="text-xl font-bold mb-2">Continue Your Personality Assessment</h2>
           <p className="mb-4">
-            You're currently viewing the free version with limited recommendations. 
-            Upgrade to see all 5 personalized career matches with detailed insights.
+            You've completed the free portion of our assessment (20 questions). 
+            Upgrade to premium to unlock the remaining 50 questions and receive a comprehensive 
+            personality analysis with detailed career matches.
           </p>
           <Button onClick={onUpgrade}>Upgrade to Premium</Button>
         </div>

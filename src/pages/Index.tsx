@@ -53,7 +53,7 @@ const Index = () => {
   };
 
   const handleNextQuestion = () => {
-    if (!isPremiumUser && currentQuestionIndex === 14) {
+    if (!isPremiumUser && currentQuestionIndex === 19) {
       setStep(FlowStep.PREMIUM_CTA);
       return;
     }
